@@ -23,7 +23,7 @@
         },
         "repoURL": {
             "type": "string",
-            "defaultValue": "https://github.com/PaloAltoNetworks/azure-autoscaling.git",
+            "defaultValue": "https://github.com/fahadysf/azure-autoscaling.git",
             "metadata": {
                 "description": "The URL for the GitHub repository that hosts the Azure Function bits."
             }
@@ -43,25 +43,24 @@
         }
     },
     "variables": {
-        "location" : "[resourceGroup().location]",
+        "location": "[resourceGroup().location]",
         "functionAppName": "[parameters('panoramaPluginMessageHandlerName')]",
         "namingInfix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
         "hostingPlanName": "[concat(parameters('panoramaPluginMessageHandlerName'), '-plan')]",
         "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'functions')]",
         "RootManageSharedAccessKey_name": "RootManageSharedAccessKey",
         "serviceBusApiVersion": "2014-09-01",
-        "baseUrl" : "https://raw.githubusercontent.com/PaloAltoNetworks/azure-autoscaling/master/Version-1-0/infra",
+        "baseUrl": "https://raw.githubusercontent.com/fahadysf/azure-autoscaling/master/Version-1-0/infra",
         "serviceBusUrl": "[concat(variables('baseUrl'), '/deployServiceBus.json')]",
         "functionHostingPlan": "Basic",
         "appInsightsInstancename": "[concat(parameters('panoramaPluginMessageHandlerName'), '-appinsights-', variables('namingInfix'))]",
         "workerSize": "0"
     },
-    "resources": [
-        {
+    "resources": [{
             "name": "SetupServiceBusNamespace",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-09-01",
-            "properties": { 
+            "properties": {
                 "mode": "Incremental",
                 "templateLink": {
                     "uri": "[variables('serviceBusUrl')]",
@@ -139,8 +138,7 @@
                             "*"
                         ]
                     },
-                    "appSettings": [
-                        {
+                    "appSettings": [{
                             "name": "FUNCTIONS_EXTENSION_VERSION",
                             "value": "~1"
                         },
@@ -184,21 +182,19 @@
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
                 "[resourceId('microsoft.insights/components/', variables('appInsightsInstancename'))]"
             ],
-            "resources": [
-                {
-                    "apiVersion": "2015-08-01",
-                    "name": "web",
-                    "type": "sourcecontrols",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/Sites', variables('functionAppName'))]"
-                    ],
-                    "properties": {
-                        "RepoUrl": "[parameters('repoURL')]",
-                        "branch": "[parameters('branch')]",
-                        "IsManualIntegration": true
-                    }
+            "resources": [{
+                "apiVersion": "2015-08-01",
+                "name": "web",
+                "type": "sourcecontrols",
+                "dependsOn": [
+                    "[resourceId('Microsoft.Web/Sites', variables('functionAppName'))]"
+                ],
+                "properties": {
+                    "RepoUrl": "[parameters('repoURL')]",
+                    "branch": "[parameters('branch')]",
+                    "IsManualIntegration": true
                 }
-            ]
+            }]
         }
     ],
     "outputs": {
